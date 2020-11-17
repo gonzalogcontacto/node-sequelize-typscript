@@ -7,6 +7,8 @@ class UsersRoutes {
     
     constructor(){
         this.router.get('/', usersController.index);
+        this.router.get('/show/:id', usersController.show);
+        this.router.get('/where', usersController.where);
         this.router.post('/add', usersController.create);
     }
 }
