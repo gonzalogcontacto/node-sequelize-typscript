@@ -1,0 +1,24 @@
+{
+  "name": "sequelize-typescript",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon"
+  },
+  "author": "gonzalogcontacto@gmail.com",
+  "license": "ISC",
+  "dependencies": {
+    "@types/express": "^4.17.9",
+    "@types/node": "^14.14.7",
+    "@types/sequelize": "^4.28.9",
+    "express": "^4.17.1",
+    "mysql2": "^2.2.5",
+    "nodemon": "^2.0.6",
+    "sequelize": "^6.3.5",
+    "sequelize-cli-typescript": "^3.2.0-c",
+    "ts-node-dev": "^1.0.0",
+    "typescript": "^4.0.5"
+  }
+}
