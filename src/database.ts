@@ -1,5 +1,5 @@
 import * as Sequelize from 'sequelize'
-import * as data from './config/config.json';
+import data from './config/config.json';
 
 const db = data.development.database
 const username = data.development.username

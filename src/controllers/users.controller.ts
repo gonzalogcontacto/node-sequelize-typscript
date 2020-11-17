@@ -23,17 +23,11 @@ class UsersController {
 
         User.findAll({
             where: {
-                name: {
-                    [Op.like] : '%G%'
-                },
-               id :{
-                    [Op.notIn] : [1, 2, 3, 4, 9, 8]
-               }
-            },
-            raw: true 
+                id: 22,
+            }        
         })
-        .then((user) => (user) ? res.send(user): console.log(0))
-        .catch((err: Error) => res.status(500).json(err));
+        .then((users) => console.log(users))
+        .catch((err) => console.log(err));
     }
 
     public create(req: Request, res: Response) {
