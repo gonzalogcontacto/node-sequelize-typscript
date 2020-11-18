@@ -1,24 +1,21 @@
 import { Model, DataTypes, Sequelize } from 'sequelize';
 import { database } from "../database";
-import { Company } from '../models/company';
 
-export class User extends Model {
+export class Company extends Model {
     public id!: number;
     public name!: string;
-    public familyName!: string;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
 }
 
-export interface UserInterface {
+export interface CompanyInterface {
     id: Number
     name: String
-    familyName: String
     createdAt: Date
     updatedAt: Date
 }
 
-User.init(
+Company.init(
     {
       id: {
         type: DataTypes.INTEGER.UNSIGNED,
@@ -26,10 +23,6 @@ User.init(
         primaryKey: true,
       },
       name: {
-        type: new DataTypes.STRING(128),
-        allowNull: false,
-      },
-      familyName: {
         type: new DataTypes.STRING(128),
         allowNull: false,
       },
@@ -45,9 +38,7 @@ User.init(
       },
     },
     {
-      tableName: "users",
+      tableName: "companies",
       sequelize: database, // this bit is important
     }
   );
-  
-  //User.belongsTo(Company, {as: 'companies', foreignKey: 'CompanyId'});

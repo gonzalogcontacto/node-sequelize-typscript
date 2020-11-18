@@ -1,35 +1,33 @@
 import { Model, DataTypes, Sequelize } from 'sequelize';
 import { database } from "../database";
-import { Company } from '../models/company';
 
-export class User extends Model {
+export class Provider extends Model {
     public id!: number;
-    public name!: string;
-    public familyName!: string;
+    public slName!: string;
+    public email!: string;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
 }
 
-export interface UserInterface {
+export interface ProviderInterface {
     id: Number
     name: String
-    familyName: String
     createdAt: Date
     updatedAt: Date
 }
 
-User.init(
+Provider.init(
     {
       id: {
         type: DataTypes.INTEGER.UNSIGNED,
         autoIncrement: true,
         primaryKey: true,
       },
-      name: {
+      slName: {
         type: new DataTypes.STRING(128),
         allowNull: false,
       },
-      familyName: {
+      email: {
         type: new DataTypes.STRING(128),
         allowNull: false,
       },
@@ -45,7 +43,7 @@ User.init(
       },
     },
     {
-      tableName: "users",
+      tableName: "providers",
       sequelize: database, // this bit is important
     }
   );
