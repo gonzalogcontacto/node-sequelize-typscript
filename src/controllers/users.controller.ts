@@ -1,17 +1,20 @@
 import { Request, Response } from 'express';
-import { Op } from 'sequelize';
+
+import { Op, Model } from 'sequelize';
+import { Sales } from '../models/sales';
 import { User, UserInterface } from '../models/user';
-import { Company } from '../models/company';
 import { Product } from '../models/product';
 import { Provider } from '../models/provider';
+import { ProductAssociation } from '../associations';
+import { UserAssociation } from '../associations';
 
 class UsersController {
 
     public async index(req: Request, res: Response) {
 
         try{
-            const user: Array<Product> | null = await Product.findAll();
-            
+            const user: Array<User> | null = await User.findAll();
+
             if(user) {
                 res.json(user);
             }else{
@@ -31,22 +34,108 @@ class UsersController {
         .catch((err: Error) => res.json(err));
     */
         try{
-
-            const user: User | null = await User.findByPk(req.params.id, { raw: true });
-            console.log(user);
+            
         
-            const product: Product | null =  await Product.findByPk(1);
-            console.log(product?.providerId);
-        
-            const provider: Provider | null =  await Provider.findByPk(String(product?.providerId));
-            console.log(provider?.slName);
+            const product = await Product.findAll({
+                include: [
+                    {
+                        model: Provider
+                    }
+                ]
+            });
 
-            res.json({product: product ,provider: provider});
+            const productss = await Provider.findAll({
+                include: [
+                    {
+                        model: Product
+                    }
+                ],
+                raw: true,
+                nest: true
+            });
+        
+            const providers: Provider[] | null =  await Provider.findAll( 
+                {
+                    where:{
+                        id: 1
+                    },
+                    include: [
+                        { model: Product }
+                    ],
+                    raw:true,
+                    nest:true
+                }
+            );
+
+            const other = productss[0].getDataValue;
+            const json = productss;
+            console.log(providers);
+        
+            res.json(
+                {
+                    product: product, 
+                    providers: providers[0]
+                }
+            );
 
         } catch(err) {
-            res.sendStatus(500).json(err);
+            console.log(err);
+            res.sendStatus(500);
         }
 
+    }
+
+    public async sales(req: Request, res: Response){
+
+
+        try{
+            const result = await Sales.findAll({
+                include: [
+                    
+                    {model: User},
+                    {model: Product}
+                ],
+                nest: true
+            });
+            
+            res.json(result);
+
+        } catch (error){
+            console.log(error);
+            res.send(error);
+        }
+            
+    }
+
+    public async salesOfUser(req: Request, res: Response){
+
+        try{
+            
+            // ¡¡¡ FUNCIONA PARA INCLUDE N:M!!!!
+            /*
+                User.hasMany(Sales, {foreignKey: 'userId', as :'sales'});
+                Product.belongsToMany(User, {through: Sales, foreignKey: 'productId'});
+                User.belongsToMany(Product, {through: Sales, foreignKey: 'userId'});
+            */
+
+           User.belongsToMany(Product, { through: Sales})
+           Product.belongsToMany(User, { through: Sales})
+         
+            const result = await User.findAll({
+                include: [
+                    { model: Product}
+                ],
+                raw: true,
+                nest: true
+            });
+
+            res.send(result)
+        } catch(error){
+            console.log(error);
+            
+            res.send(error);
+        }   
+            
     }
 
     public where(req: Request, res: Response){
@@ -69,13 +158,98 @@ class UsersController {
         .catch((err) => console.log(err));
     }
 
-    public create(req: Request, res: Response) {
-        const params: UserInterface = req.body;
-    
-        User.create(params)
-          .then((user: User) => res.status(201).json(user))
-          .catch((err: Error) => res.status(500).json(err));
+    public async create(req: Request, res: Response) {
 
+        const params = req.body;
+        
+        try{
+
+            const result = await User.create(params)
+            res.send(result);
+            
+            if(result){
+                res.sendStatus(202);
+            }else{
+                res.sendStatus(404);
+            }
+
+
+        } catch (error){
+            console.log(error);
+            res.send(error);
+        }
+
+    }
+    
+    public async delete(req: Request, res: Response) {
+
+        try{
+
+            const result = await User.destroy({
+                where: {
+                    // criteria
+                    id: req.params.id
+                }
+            })
+            
+            if(result){
+                res.sendStatus(202);
+            }else{
+                res.sendStatus(404);
+            }
+
+
+        } catch (error){
+            console.log(error);
+            res.send(error);
+        }
+    }
+
+    public async update(req: Request, res: Response) {
+
+        try{
+
+            const result = await User.update( 
+                { name: 'a very different title now' },
+                { where: { id: 4 } 
+            });
+            
+            if(result){
+                res.sendStatus(202);
+            }else{
+                res.sendStatus(404);
+            }
+
+
+        } catch (error){
+            console.log(error);
+            res.send(error);
+        }
+    }
+
+    public async partial(req: Request, res: Response) {
+
+        try{
+            
+            const result = await User.update( 
+                { 
+                    name: req.body.name,
+                    familyName: req.body.familyName,
+                },
+                { where: { id: req.params.id } 
+            });
+            
+            if(result){
+                res.sendStatus(202);
+            }else{
+                res.sendStatus(404);
+            }
+
+
+        } catch (error){
+            console.log(error);
+            res.send(error);
+        }
     }
 }
 

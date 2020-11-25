@@ -1,7 +1,8 @@
-import { Model, DataTypes, Sequelize, DecimalDataType } from 'sequelize';
-import { database } from "../database";
-import { Company } from '../models/company';
+import { Model, DataTypes, Sequelize, DecimalDataType, Association } from 'sequelize';
+import database  from "../database";
 import { Provider } from './provider';
+import { User } from './user';
+import { Sales } from './sales';
 
 export class Product extends Model {
     public id!: number;
@@ -16,7 +17,7 @@ export interface ProductInterface {
     id: Number
     title: String
     price: DecimalDataType
-    providerId: Provider
+    providerId: Number
     createdAt: Date
     updatedAt: Date
 }
@@ -56,4 +57,5 @@ Product.init(
       sequelize: database, // this bit is important
     }
   );
-  
+
+  //User.belongsToMany(Product, { through: 'Sales'});

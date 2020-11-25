@@ -1,39 +1,44 @@
-import { Model, DataTypes, Sequelize } from 'sequelize';
+import { Model, DataTypes, Sequelize, Association } from 'sequelize';
 import database from "../database";
-import { Sales } from './sales';
+import { User } from './user';
 import { Product } from './product';
 
-export class User extends Model {
+export class Sales extends Model {
     public id!: number;
-    public name!: string;
-    public familyName!: string;
-    public Sales!: Sales[];
+    public userId!: number;
+    public productId!: number;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
+    public Product!: Product;
+    public User!: User;
 }
 
-export interface UserInterface {
-    id: Number
-    name: String
-    familyName: String
-    createdAt: Date
-    updatedAt: Date
-}
-
-User.init(
+Sales.init(
     {
       id: {
         type: DataTypes.INTEGER.UNSIGNED,
         autoIncrement: true,
         primaryKey: true,
       },
-      name: {
-        type: new DataTypes.STRING(128),
+      userId: {
+        type: new DataTypes.INTEGER,
         allowNull: false,
+        references: {
+          model: User,
+          key: 'id'
+        },
+        onDelete: 'CASCADE',
+        onUpdate: 'SET NULL',
       },
-      familyName: {
-        type: new DataTypes.STRING(128),
+      productId: {
+        type: new DataTypes.INTEGER,
         allowNull: false,
+        references: {
+          model: Product,
+          key: 'id'
+        },
+        onDelete: 'CASCADE',
+        onUpdate: 'SET NULL',
       },
       createdAt: {
         type: new DataTypes.DATE,
@@ -47,7 +52,15 @@ User.init(
       },
     },
     {
-      tableName: "users",
+      tableName: "sales",
       sequelize: database, // this bit is important
     }
   );
+
+  
+  
+  
+
+  Sales.belongsTo(User);
+  Sales.belongsTo(Product);
+

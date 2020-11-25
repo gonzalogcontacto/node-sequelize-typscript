@@ -1,5 +1,6 @@
-import { Model, DataTypes, Sequelize } from 'sequelize';
-import { database } from "../database";
+import { Model, DataTypes, Sequelize, HasManyGetAssociationsMixin, Association } from 'sequelize';
+import database from "../database";
+import { Product } from './product';
 
 export class Provider extends Model {
     public id!: number;
@@ -7,6 +8,7 @@ export class Provider extends Model {
     public email!: string;
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
+    public readonly Products?: Product[];
 }
 
 export interface ProviderInterface {
@@ -47,5 +49,3 @@ Provider.init(
       sequelize: database, // this bit is important
     }
   );
-  
-  //User.belongsTo(Company, {as: 'companies', foreignKey: 'CompanyId'});
